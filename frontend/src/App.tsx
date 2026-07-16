@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { BrowserRouter, Routes, Route, Link, useNavigate } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Link, useNavigate, Navigate } from 'react-router-dom';
 import { 
   ShoppingBag, 
   Search, 
@@ -24,7 +24,8 @@ import UserDashboard from './components/UserDashboard';
 import OwnerDashboard from './components/OwnerDashboard';
 import DeliveryBoyDashboard from './components/DeliveryBoyDashboard';
 import { useSelector } from 'react-redux';
-
+import EditShop from './components/CreateAndEditShop';
+//import { useNavigate } from 'react-router-dom';
 interface Dish {
   id: string;
   name: string;
@@ -124,7 +125,8 @@ function StoreContent({ user, onSignOut }: { user: User | null; onSignOut: () =>
   const [checkoutSuccess, setCheckoutSuccess] = useState<boolean>(false);
   const [isCheckoutLoading, setIsCheckoutLoading] = useState<boolean>(false);
   const [authError, setAuthError] = useState<string>('');
-
+  
+ // const navigate = useNavigate()
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -564,15 +566,28 @@ function RoleBasedHome({ user, onSignOut }: { user: User | null; onSignOut: () =
     return <StoreContent user={null} onSignOut={onSignOut} />;
   }
 
-  switch (activeUser.role) {
-    case 'owner':
-      return <OwnerDashboard user={activeUser} onSignOut={onSignOut} />;
-    case 'deliveryboy':
-      return <DeliveryBoyDashboard user={activeUser} onSignOut={onSignOut} />;
-    default:
-      return <UserDashboard user={activeUser} onSignOut={onSignOut} />;
+  const role = activeUser.payload?.role ?? activeUser.role;
+  console.log('Active User Role in App:', role);
+
+  if (role === 'owner') {
+    return <Navigate to="/owner-dashboard" replace />;
   }
-}
+
+  if (role === 'deliveryboy') {
+    return <Navigate to="/deliveryboy-dashboard" replace />;
+  }
+
+  return <UserDashboard user={activeUser} onSignOut={onSignOut} />;
+
+//   switch (role) {
+//     case 'owner':
+//      return <OwnerDashboard user={activeUser} onSignOut={onSignOut} />;
+//     case 'deliveryboy':
+//       return <DeliveryBoyDashboard user={activeUser} onSignOut={onSignOut} />;
+//     default:
+//       return <UserDashboard user={activeUser} onSignOut={onSignOut} />;
+//   }
+ }
 
 export default function App() {
   const [user, setUser] = useState<User | null>(null);
@@ -637,6 +652,14 @@ export default function App() {
         <Route 
           path="/forgot-password" 
           element={<ForgotPassword />} 
+        />
+        <Route
+          path="/owner-dashboard/edit-shop"
+          element={<EditShop/>}
+        />
+        <Route 
+          path='/owner-dashboard'
+          element={<OwnerDashboard/>}
         />
       </Routes>
     </BrowserRouter>

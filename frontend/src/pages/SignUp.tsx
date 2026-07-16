@@ -4,7 +4,7 @@ import { signInWithPopup } from 'firebase/auth';
 import { Eye, EyeOff } from 'lucide-react';
 import { firebaseAuth, googleProvider } from '../firebase';
 import { useDispatch } from 'react-redux';
-import { setUser } from '../features/authSlice/auth';
+import { setUser } from '../redux/authSlice/auth';
 interface SignUpProps {
   onSuccess: (user: any) => void;
 }
@@ -58,7 +58,7 @@ export default function SignUp({ onSuccess }: SignUpProps) {
       if (!response.ok) {
         throw new Error(data.error || 'Failed to create account.');
       }
-       dispatch(setUser({ type: 'SET_USER', payload: data }));
+      dispatch(setUser(data));
       navigate('/signin?registered=true');
     } catch (err) {
       setError((err as Error).message);

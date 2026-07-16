@@ -1,5 +1,5 @@
 import { v2 as cloudinary } from 'cloudinary';
-import dotenv from 'dotenv';
+import * as dotenv from 'dotenv';
 
 dotenv.config();
 
@@ -10,13 +10,24 @@ cloudinary.config({
 });
 
 export const uploadToCloudinary = async (fileBuffer: Buffer, folder = 'fooddelivery') => {
-  return new Promise((resolve, reject) => {
+  return new Promise<any>((resolve, reject) => {
+    console.log('storing');
     const stream = cloudinary.uploader.upload_stream({ folder }, (error, result) => {
-      if (error || !result) {
-        reject(error || new Error('Cloudinary upload failed'));
+      console.log('cloudinary callback', { error, result });
+      if (error) {
+        console.log('Cloudinary upload error', error);
+        reject(error);
         return;
       }
+
+      if (!result) {
+        console.log('Cloudinary upload returned no result');
+        reject(new Error('Cloudinary upload failed: no result'));
+        return;
+      }
+
       resolve(result);
+      console.log('stored');
     });
 
     stream.end(fileBuffer);

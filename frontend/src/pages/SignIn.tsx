@@ -4,8 +4,8 @@ import { signInWithPopup } from 'firebase/auth';
 import { Eye, EyeOff } from 'lucide-react';
 import { firebaseAuth, googleProvider } from '../firebase';
 import { useDispatch } from 'react-redux';
-import { setUser } from '../features/authSlice/auth';
-
+import { setUser } from '../redux/authSlice/auth';
+import { useSelector } from 'react-redux';
 interface SignInProps {
   onSuccess: (user: any) => void;
 }
@@ -68,9 +68,19 @@ export default function SignIn({ onSuccess }: SignInProps) {
 
       // Pass user info back to App state
       onSuccess(data);
-      dispatch(setUser({ type: 'SET_USER', payload: data }));
+      dispatch(setUser(data));
       // Redirect home
-      navigate('/');
+      //  const reduxUser = useSelector((state: any) => state.auth?.user);
+      //   const activeUser = reduxUser ;
+      
+      //   const role = activeUser.payload?.role ?? activeUser.role;
+      //   console.log("Active User Role in App:", role);
+      
+      // if(role == 'owner'){
+      //  navigate('/owner-dashboard')
+      //  }
+     // else if( role == '')
+
     } catch (err) {
       setError((err as Error).message);
     } finally {

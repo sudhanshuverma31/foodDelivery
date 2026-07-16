@@ -16,7 +16,7 @@ export interface AuthRequest extends Request {
 
 export async function authenticate(req: AuthRequest, res: Response, next: NextFunction) {
   const token = req.cookies?.token;
-
+  console.log("authenticating")
   if (!token) {
     return res.status(401).json({ error: 'Access denied. Sign in to proceed.' });
   }
@@ -36,7 +36,7 @@ export async function authenticate(req: AuthRequest, res: Response, next: NextFu
       mobile: user.mobile,
       role: user.role
     };
-
+    console.log("authentication is working")
     next();
   } catch (err) {
     return res.status(403).json({ error: 'Invalid or expired authentication session.' });
