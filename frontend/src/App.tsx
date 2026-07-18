@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { BrowserRouter, Routes, Route, Link, useNavigate, Navigate } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, useNavigate, Link } from 'react-router-dom';
 import { 
   ShoppingBag, 
   Search, 
@@ -23,7 +23,8 @@ import ForgotPassword from './pages/ForgotPassword';
 import UserDashboard from './components/UserDashboard';
 import OwnerDashboard from './components/OwnerDashboard';
 import DeliveryBoyDashboard from './components/DeliveryBoyDashboard';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
+import { clearUser } from './redux/authSlice/auth';
 import EditShop from './components/CreateAndEditShop';
 //import { useNavigate } from 'react-router-dom';
 interface Dish {
@@ -298,7 +299,7 @@ function StoreContent({ user, onSignOut }: { user: User | null; onSignOut: () =>
             </div>
           ) : (
             <div className="flex items-center gap-2">
-              <Link 
+              <Link
                 to="/signin" 
                 className="text-xs font-semibold px-4 py-2 rounded-xl border border-slate-700 text-slate-350 hover:bg-slate-850 hover:text-slate-100 transition-all cursor-pointer"
               >
@@ -570,11 +571,11 @@ function RoleBasedHome({ user, onSignOut }: { user: User | null; onSignOut: () =
   console.log('Active User Role in App:', role);
 
   if (role === 'owner') {
-    return <Navigate to="/owner-dashboard" replace />;
+    return <OwnerDashboard user={activeUser} onSignOut={onSignOut} />;
   }
 
   if (role === 'deliveryboy') {
-    return <Navigate to="/deliveryboy-dashboard" replace />;
+    return <DeliveryBoyDashboard user={activeUser} onSignOut={onSignOut} />;
   }
 
   return <UserDashboard user={activeUser} onSignOut={onSignOut} />;
@@ -592,6 +593,7 @@ function RoleBasedHome({ user, onSignOut }: { user: User | null; onSignOut: () =
 export default function App() {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
+  const dispatch = useDispatch();
 
   // Resume user profile session on page mount
   useEffect(() => {
@@ -620,6 +622,7 @@ export default function App() {
         credentials: 'include'
       });
       setUser(null);
+      dispatch(clearUser());
     } catch (err) {
       console.error('Logout error:', err);
     }
@@ -659,7 +662,7 @@ export default function App() {
         />
         <Route 
           path='/owner-dashboard'
-          element={<OwnerDashboard/>}
+          element={<OwnerDashboard onSignOut={handleSignOut} />}
         />
       </Routes>
     </BrowserRouter>

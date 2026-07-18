@@ -14,8 +14,8 @@ function setAuthCookie(res: Response, userId: string, role: string) {
 
   res.cookie('token', token, {
     httpOnly: true,
-    secure: false, // set to true in production if HTTPS is active
-    sameSite: 'lax',
+    secure: true,
+    sameSite: 'none',
     maxAge: TOKEN_EXPIRY
   });
 }
@@ -156,8 +156,8 @@ export async function handleSignOut(req: Request, res: Response) {
   try {
     res.clearCookie('token', {
       httpOnly: true,
-      secure: false,
-      sameSite: 'lax'
+      secure: true,
+      sameSite: 'none'
     });
     res.status(200).json({ message: 'Signed out successfully' });
   } catch (err) {

@@ -61,7 +61,7 @@ export default function SignIn({ onSuccess }: SignInProps) {
       });
 
       const data = await response.json();
-
+  
       if (!response.ok) {
         throw new Error(data.error || 'Invalid credentials.');
       }
@@ -69,17 +69,7 @@ export default function SignIn({ onSuccess }: SignInProps) {
       // Pass user info back to App state
       onSuccess(data);
       dispatch(setUser(data));
-      // Redirect home
-      //  const reduxUser = useSelector((state: any) => state.auth?.user);
-      //   const activeUser = reduxUser ;
-      
-      //   const role = activeUser.payload?.role ?? activeUser.role;
-      //   console.log("Active User Role in App:", role);
-      
-      // if(role == 'owner'){
-      //  navigate('/owner-dashboard')
-      //  }
-     // else if( role == '')
+      navigate('/');
 
     } catch (err) {
       setError((err as Error).message);

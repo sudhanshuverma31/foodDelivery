@@ -17,10 +17,11 @@ export interface AuthRequest extends Request {
 export async function authenticate(req: AuthRequest, res: Response, next: NextFunction) {
   const token = req.cookies?.token;
   console.log("authenticating")
+  console.log("token"+token)
   if (!token) {
     return res.status(401).json({ error: 'Access denied. Sign in to proceed.' });
   }
-
+   console.log("token"+token)
   try {
     const decoded = jwt.verify(token, JWT_SECRET) as { id: string; role: 'user' | 'owner' | 'deliveryboy' };
     

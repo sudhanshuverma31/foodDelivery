@@ -8,7 +8,7 @@ interface DashboardProps {
 function UserDashboard({ user, onSignOut }: DashboardProps) {
   return (
   <>
-        <Navbar/>
+        <Navbar onSignOut={onSignOut}/>
        
     <div className="min-h-screen bg-slate-950 text-white p-6 mt-20">
      

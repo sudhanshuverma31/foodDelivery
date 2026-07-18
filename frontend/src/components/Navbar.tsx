@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
+import { useNavigate } from 'react-router-dom';
 import { FaLocationDot } from "react-icons/fa6";
 import { IoSearchSharp } from "react-icons/io5";
 import { IoCartOutline } from "react-icons/io5";
@@ -6,7 +7,12 @@ import { useSelector } from 'react-redux';
 import { FaPlus } from "react-icons/fa";
 import useGetCity from '../hooks/useGetCity';
 
-function Navbar() {
+interface NavbarProps {
+  onSignOut?: () => Promise<void> | void;
+}
+
+function Navbar({ onSignOut }: NavbarProps) {
+  const navigate = useNavigate();
   const [isMenuOpen, setIsMenuOpen] = useState(false)
  // const [showSearch , set] = useState(true)
   const [showSearchModal, setShowSearchModal] = useState(false)
@@ -59,7 +65,7 @@ function Navbar() {
         
       </div>
       )}
-       {role == 'owner' && !isOwnerShop &&(
+       {role == 'owner' && isOwnerShop &&(
           <button className="flex gap-2 items center bg-[#ff4d2d] text-white rounded-lg px-4 py-2 hover:bg-[#e53e3e] transition-colors">
             <FaPlus size={20}/>
             <span>Add Food Item </span>
@@ -101,6 +107,13 @@ function Navbar() {
             </button>
             <button
               type="button"
+              onClick={async () => {
+                if (onSignOut) {
+                  await onSignOut();
+                  navigate('/');
+                }
+                setIsMenuOpen(false);
+              }}
               className="flex w-full items-center rounded-lg px-3 py-2 text-left text-sm font-medium text-gray-700 transition hover:bg-[#fff3ee] hover:text-[#ff4d2d]"
             >
               Logout
