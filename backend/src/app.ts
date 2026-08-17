@@ -9,6 +9,7 @@ import authRoutes from './routes/auth.routes';
 import uploadRoutes from './routes/upload.routes';
 import shopRoutes from './routes/shop.routes';
 import itemRoutes from './routes/item.routes';
+import cartRoutes from './routes/cart.routes';
 
 dotenv.config();
 
@@ -38,6 +39,7 @@ app.use('/api/orders', orderRoutes);
 app.use('/api/upload', uploadRoutes);
 app.use('/api/shops', shopRoutes);
 app.use('/api/items', itemRoutes);
+app.use('/api/cart', cartRoutes);
 
 // Health / DB status route
 app.get('/api/status', (req, res) => {

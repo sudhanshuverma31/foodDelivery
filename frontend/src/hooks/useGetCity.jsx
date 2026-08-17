@@ -4,36 +4,35 @@ import { setLocation } from '../redux/locationSlice/location';
 
 function useGetCity() {
   const dispatch = useDispatch();
-
+  console.log("ego>>>>>>")
   useEffect(() => {
     const defaultLocation = { city: 'Delhi' };
 
     const fetchCityByCoords = async (lat, lng) => {
-      const apiKey = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
-
-      if (!apiKey) {
-        dispatch(setLocation({ ...defaultLocation, lat, lng }));
-        return;
-      }
+      const apiKey = import.meta.env.VITE_GEOAPIKEY;
+      console.log("time......")
 
       try {
-        const response = await fetch(
-          `https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${lng}&key=${apiKey}`
-        );
-        const data = await response.json();
+        let city = 'Delhi';
+        console.log("hi......")
+        if (apiKey) {
+          const response = await fetch(
+            `https://api.geoapify.com/v1/geocode/reverse?lat=${lat}&lon=${lng}&format=json&apiKey=${apiKey}`
+          );
+          const data = await response.json();
+          console.log("location ", data);
+          city = data.results?.[0]?.city || data.results?.[0]?.county || 'Delhi';
+        } else {
+          const response = await fetch(
+            `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`
+          );
+          const data = await response.json();
+          city = data.address?.city || data.address?.town || data.address?.village || 'Delhi';
+        }
 
-        const place = data.results?.find((result) => result.types?.includes('locality'))
-          ?? data.results?.[0];
-
-        dispatch(
-          setLocation({
-            city: place?.formatted_address ?? 'Delhi',
-            lat,
-            lng,
-          })
-        );
+        dispatch(setLocation({ city, lat, lng }));
       } catch (error) {
-        console.error('Failed to fetch location from Google:', error);
+        console.error('Failed to fetch location:', error);
         dispatch(setLocation({ ...defaultLocation, lat, lng }));
       }
     };
@@ -45,6 +44,7 @@ function useGetCity() {
 
     navigator.geolocation.getCurrentPosition(
       (position) => {
+        console.log(position)
         const { latitude, longitude } = position.coords;
         fetchCityByCoords(latitude, longitude);
       },
@@ -56,7 +56,7 @@ function useGetCity() {
         timeout: 10000,
       }
     );
-  }, [dispatch]);
+  }, []);
 }
 
 export default useGetCity;

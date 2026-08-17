@@ -3,7 +3,7 @@ interface DashboardProps {
   onSignOut?: () => void;
 }
 
-function DeliveryBoyDashboard({ user, onSignOut }: DashboardProps) {
+export default function DeliveryBoyDashboard({ user, onSignOut }: DashboardProps) {
   return (
     <div className="min-h-screen bg-slate-950 text-white p-6">
       <div className="mx-auto max-w-5xl space-y-6">
@@ -39,4 +39,3 @@ function DeliveryBoyDashboard({ user, onSignOut }: DashboardProps) {
   )
 }
 
-export default DeliveryBoyDashboard

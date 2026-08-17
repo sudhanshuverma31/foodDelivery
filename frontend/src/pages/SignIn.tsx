@@ -5,7 +5,6 @@ import { Eye, EyeOff } from 'lucide-react';
 import { firebaseAuth, googleProvider } from '../firebase';
 import { useDispatch } from 'react-redux';
 import { setUser } from '../redux/authSlice/auth';
-import { useSelector } from 'react-redux';
 interface SignInProps {
   onSuccess: (user: any) => void;
 }
@@ -14,12 +13,12 @@ export default function SignIn({ onSuccess }: SignInProps) {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const location = useLocation();
-  
+
   const [formData, setFormData] = useState({
     email: '',
     password: ''
   });
-  
+
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
   const [info, setInfo] = useState('');
@@ -61,11 +60,11 @@ export default function SignIn({ onSuccess }: SignInProps) {
       });
 
       const data = await response.json();
-  
+
       if (!response.ok) {
         throw new Error(data.error || 'Invalid credentials.');
       }
-
+      console.log(data)
       // Pass user info back to App state
       onSuccess(data);
       dispatch(setUser(data));
@@ -110,14 +109,17 @@ export default function SignIn({ onSuccess }: SignInProps) {
   };
 
   return (
-    <div className="min-h-screen bg-[#faf8f6] flex flex-col justify-center items-center py-12 px-4 sm:px-6 lg:px-8">
+    <div className="relative min-h-screen overflow-hidden bg-slate-900 flex flex-col justify-center items-center py-12 px-4 sm:px-6 lg:px-8">
+      <div className="absolute inset-0 bg-gradient-to-br from-slate-900 via-rose-950/30 to-slate-900" />
+      <div className="absolute -top-32 -left-24 h-96 w-96 rounded-full bg-rose-500/10 blur-3xl" />
+      <div className="absolute -bottom-32 -right-24 h-96 w-96 rounded-full bg-orange-500/10 blur-3xl" />
       {/* Vingo Auth Card */}
-      <div className="max-w-[420px] w-full bg-white rounded-2xl p-8 border border-gray-100/80 shadow-md shadow-gray-100/50 space-y-6">
-        
+      <div className="relative z-10 max-w-[420px] w-full bg-slate-800/80 backdrop-blur-md rounded-2xl p-8 border border-slate-700/80 shadow-2xl shadow-black/30 space-y-6">
+
         {/* Card Header */}
         <div className="space-y-1">
-          <h2 className="text-3xl font-extrabold text-[#e53e3e] tracking-tight">Vingo</h2>
-          <p className="text-xs text-gray-500 font-medium">
+          <h2 className="text-3xl font-extrabold tracking-tight bg-gradient-to-r from-rose-500 to-orange-500 bg-clip-text text-transparent">Vingo</h2>
+          <p className="text-xs text-slate-400 font-medium">
             Sign in to start ordering fresh gourmet meals
           </p>
         </div>
@@ -138,20 +140,20 @@ export default function SignIn({ onSuccess }: SignInProps) {
         <form onSubmit={handleSubmit} className="space-y-4">
           {/* Email */}
           <div className="space-y-1">
-            <label className="text-xs font-bold text-gray-700 tracking-wide">Email</label>
+            <label className="text-xs font-bold text-slate-300 tracking-wide">Email</label>
             <input
               type="email"
               name="email"
               placeholder="Enter your Email"
               value={formData.email}
               onChange={handleChange}
-              className="w-full text-sm border border-gray-200 rounded-xl px-4 py-2.5 outline-none focus:border-[#e53e3e] focus:ring-1 focus:ring-[#e53e3e]/30 text-gray-800 placeholder:text-gray-400/80 transition-all"
+              className="w-full bg-slate-900/70 text-sm border border-slate-700 rounded-xl px-4 py-2.5 outline-none focus:border-rose-500 focus:ring-1 focus:ring-rose-500/30 text-slate-100 placeholder:text-slate-500 transition-all"
             />
           </div>
 
           {/* Password */}
           <div className="space-y-1">
-            <label className="text-xs font-bold text-gray-700 tracking-wide">Password</label>
+            <label className="text-xs font-bold text-slate-300 tracking-wide">Password</label>
             <div className="relative flex items-center">
               <input
                 type={showPassword ? 'text' : 'password'}
@@ -159,7 +161,7 @@ export default function SignIn({ onSuccess }: SignInProps) {
                 placeholder="Enter your password"
                 value={formData.password}
                 onChange={handleChange}
-                className="w-full text-sm border border-gray-200 rounded-xl pl-4 pr-10 py-2.5 outline-none focus:border-[#e53e3e] focus:ring-1 focus:ring-[#e53e3e]/30 text-gray-800 placeholder:text-gray-400/80 transition-all"
+                className="w-full bg-slate-900/70 text-sm border border-slate-700 rounded-xl pl-4 pr-10 py-2.5 outline-none focus:border-rose-500 focus:ring-1 focus:ring-rose-500/30 text-slate-100 placeholder:text-slate-500 transition-all"
               />
               <button
                 type="button"
@@ -186,7 +188,7 @@ export default function SignIn({ onSuccess }: SignInProps) {
           <button
             type="submit"
             disabled={loading}
-            className="w-full mt-2 bg-[#e53e3e] hover:bg-[#c53030] text-white rounded-xl py-2.5 font-bold text-sm shadow-md shadow-[#e53e3e]/10 transition-colors active:scale-[0.99] disabled:opacity-50 cursor-pointer flex justify-center items-center"
+            className="w-full mt-2 bg-gradient-to-r from-rose-500 to-orange-500 hover:from-rose-600 hover:to-orange-600 text-white rounded-xl py-2.5 font-bold text-sm shadow-md shadow-rose-500/20 transition-colors active:scale-[0.99] disabled:opacity-50 cursor-pointer flex justify-center items-center"
           >
             {loading ? <span className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></span> : 'Sign In'}
           </button>
@@ -198,7 +200,7 @@ export default function SignIn({ onSuccess }: SignInProps) {
             type="button"
             onClick={handleGoogleSignIn}
             disabled={loading}
-            className="w-full flex items-center justify-center gap-2 border border-gray-200 hover:bg-gray-50 text-gray-600 rounded-xl py-2 text-xs font-bold transition-all cursor-pointer"
+            className="w-full flex items-center justify-center gap-2 border border-slate-700 hover:bg-slate-700/70 text-slate-300 rounded-xl py-2 text-xs font-bold transition-all cursor-pointer"
           >
             <svg className="w-4 h-4" viewBox="0 0 24 24">
               <path
@@ -223,7 +225,7 @@ export default function SignIn({ onSuccess }: SignInProps) {
 
           {/* Create new account link */}
           <div className="text-center">
-            <span className="text-xs text-gray-500 font-medium">
+            <span className="text-xs text-slate-400 font-medium">
               Don't have an account ?{' '}
               <Link to="/signup" className="text-[#e53e3e] font-bold hover:underline">
                 Sign Up

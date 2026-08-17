@@ -11,11 +11,14 @@ const TOKEN_EXPIRY = 7 * 24 * 60 * 60 * 1000; // 7 days in milliseconds
 
 function setAuthCookie(res: Response, userId: string, role: string) {
   const token = jwt.sign({ id: userId, role }, JWT_SECRET, { expiresIn: '7d' });
+  const isProduction = process.env.NODE_ENV === 'production';
 
   res.cookie('token', token, {
     httpOnly: true,
-    secure: true,
-    sameSite: 'none',
+    // Secure cookies are required with SameSite=None in production, but they
+    // are rejected by browsers when using the local HTTP development server.
+    secure: isProduction,
+    sameSite: isProduction ? 'none' : 'lax',
     maxAge: TOKEN_EXPIRY
   });
 }
@@ -154,10 +157,11 @@ export async function handleGoogleSignIn(req: Request, res: Response) {
 
 export async function handleSignOut(req: Request, res: Response) {
   try {
+    const isProduction = process.env.NODE_ENV === 'production';
     res.clearCookie('token', {
       httpOnly: true,
-      secure: true,
-      sameSite: 'none'
+      secure: isProduction,
+      sameSite: isProduction ? 'none' : 'lax'
     });
     res.status(200).json({ message: 'Signed out successfully' });
   } catch (err) {
@@ -275,4 +279,3 @@ export async function resetPassword(req: Request, res: Response) {
     return res.status(500).json({ error: (err as Error).message });
   }
 }
-

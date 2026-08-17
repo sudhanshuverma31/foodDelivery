@@ -7,7 +7,7 @@ interface LocationState {
 }
 
 const initialState: LocationState = {
-  city: 'Chhituani',
+  city: 'Noida',
   lat: null,
   lng: null,
 };
